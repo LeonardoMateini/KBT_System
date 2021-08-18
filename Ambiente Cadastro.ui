@@ -59,7 +59,7 @@
        <string notr="true">background-color: rgb(234, 255, 251);</string>
       </property>
       <property name="text">
-       <string>Novo Serviço</string>
+       <string>Novo Produto ou serviço</string>
       </property>
      </widget>
     </item>
@@ -74,7 +74,7 @@
        <string notr="true">background-color: rgb(234, 255, 251);</string>
       </property>
       <property name="text">
-       <string>Editar Serviço</string>
+       <string>Editar Produto ou Serviço</string>
       </property>
      </widget>
     </item>
@@ -89,22 +89,7 @@
        <string notr="true">background-color: rgb(234, 255, 251);</string>
       </property>
       <property name="text">
-       <string>Novo Produto</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="pushButton_8">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(234, 255, 251);</string>
-      </property>
-      <property name="text">
-       <string>Editar Produto</string>
+       <string>Contratar Plano de Serviço</string>
       </property>
      </widget>
     </item>
@@ -113,7 +98,6 @@
    <zorder>pushButton_5</zorder>
    <zorder>pushButton_6</zorder>
    <zorder>pushButton_7</zorder>
-   <zorder>pushButton_8</zorder>
    <zorder>pushButton_3</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
