@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Home</class>
+ <widget class="QMainWindow" name="Home">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1080</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(128, 159, 168);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: rgb(234, 255, 251);</string>
+      </property>
+      <property name="text">
+       <string>Venda</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(234, 255, 251);</string>
+      </property>
+      <property name="text">
+       <string>Agenda</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(234, 255, 251);</string>
+      </property>
+      <property name="text">
+       <string>Cadastro</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1920</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHome">
+    <property name="title">
+     <string>Home</string>
+    </property>
+   </widget>
+   <addaction name="menuHome"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
