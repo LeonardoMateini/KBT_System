@@ -1,4 +1,14 @@
 from PyQt5 import QtWidgets, uic
+import mysql.connector
+
+banco = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    passwd='',
+    database="DB_KBT_SYSTEM"
+)
+
+cursor = banco.cursor()
 
 def chamar_cadastro():
     ambiente_cadastro.show()
