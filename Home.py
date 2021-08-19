@@ -16,13 +16,6 @@ def add_produto():
     linha4 = novo_produto_serviço.lineEdit_3.text()
     linha5 = novo_produto_serviço.lineEdit_5.text()
 
-    print(linha1)
-    print(linha2)
-    print(linha3)
-    print(linha4)
-    print(linha5)
-   
-
     bd_produto = banco.cursor()
     comando_SQL = "INSERT INTO produto (descricao,codigo_de_barras,preco,fornecedor,marca) VALUES (%s,%s,%s,%s,%s)"
     dados = (str(linha1), str(linha2), str(linha3), str(linha4), str(linha5))
