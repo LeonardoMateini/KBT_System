@@ -22,6 +22,21 @@ def add_produto():
     bd_produto.execute(comando_SQL, dados)
     banco.commit()
 
+def add_servico():
+
+    print("daniel")
+
+    linha6 = novo_produto_serviço.lineEdit_6.text()
+    linha7 = novo_produto_serviço.lineEdit_7.text()
+
+    bd_produto = banco.cursor()
+    comando_SQL = "INSERT INTO servico (descricao,preco) VALUES (%s,%s)"
+    dados = (str(linha6), str(linha7))
+    bd_produto.execute(comando_SQL, dados)
+    banco.commit()
+
+    
+
 def chamar_cadastro():
     ambiente_cadastro.show()
     ambiente_cadastro.pushButton_3.clicked.connect(chamar_novo_cliente)
@@ -61,6 +76,7 @@ novo_cliente = uic.loadUi('Novo Cliente.ui')
 
 novo_produto_serviço = uic.loadUi('Novo Produto e Serviço.ui')
 novo_produto_serviço.pushButton_2.clicked.connect(add_produto)
+novo_produto_serviço.pushButton_5.clicked.connect(add_servico)
 
 home.show()
 app.exec()
