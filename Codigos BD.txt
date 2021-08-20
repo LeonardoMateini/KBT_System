@@ -1,0 +1,16 @@
+create table produto (
+	id INT NULL AUTO_INCREMENT,
+	descricao VARCHAR(50),
+	codigo_de_barras VARCHAR(50),
+	preco DOUBLE,
+	fornecedor VARCHAR (50),
+	marca VARCHAR (50),
+	PRIMARY KEY (id)
+);
+
+create table servico (
+	id INT NULL AUTO_INCREMENT,
+	descricao varchar (50),
+	preco DOUBLE,
+	PRIMARY KEY (id)
+);
