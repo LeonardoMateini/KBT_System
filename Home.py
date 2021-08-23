@@ -22,6 +22,7 @@ def chamar_cadastro():
     ambiente_cadastro.show()
     ambiente_cadastro.pushButton_3.clicked.connect(chamar_novo_cliente)
     ambiente_cadastro.pushButton_5.clicked.connect(chamar_novo_produto_servico)
+    ambiente_cadastro.pushButton_7.clicked.connect(chamar_plano_de_serviço)
 
 
 def chamar_novo_cliente():
@@ -41,6 +42,9 @@ def chamar_novo_produto_servico():
     novo_produto_serviço.show()
     novo_produto_serviço.pushButton_2.clicked.connect(adicionar_produto)
     novo_produto_serviço.pushButton_5.clicked.connect(adicionar_servico)
+
+def chamar_plano_de_serviço():
+    plano_de_serviço.show()
 
 def adicionar_produto():
     descricao = novo_produto_serviço.lineEdit_2.text()
@@ -82,4 +86,5 @@ novo_cliente = uic.loadUi('Novo Cliente.ui')
 
 novo_produto_serviço = uic.loadUi('Novo Produto e Serviço.ui')
 
+plano_de_serviço= uic.loadUi('Contratar Plano Serviço.ui')
 app.exec()
