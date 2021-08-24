@@ -7,15 +7,19 @@ banco = mysql.connector.connect(
     passwd='',
     database="DB_KBT_SYSTEM"
 )
-# cursor = banco.cursor()
-# comando_SQL = """create table SERVICO (
-# 	ID INT NOT NULL AUTO_INCREMENT,
-# 	DESCRICAO varchar (50),
-# 	PRECO DOUBLE,
-# 	PRIMARY KEY (id)
-# );"""
-# cursor.execute(comando_SQL)
-# banco.commit()
+cursor = banco.cursor()
+comando_SQL = """CREATE TABLE TB_PET(
+      	NOME			VARCHAR(50)		NOT NULL
+    ,   FK_CONTATO_DONO INT             NOT NULL
+	,	IDADE			INT
+	,	PORTE			CHAR(1)
+	,	SEXO 			CHAR(1)         NOT NULL
+	,   CASTRADO        CHAR(1)
+	,	RACA			VARCHAR(30)
+	,	CONSTRAINT FK_CONTATO_DONO FOREIGN KEY (FK_CONTATO_DONO) REFERENCES TB_CLIENTE (CONTATO)
+);"""
+cursor.execute(comando_SQL)
+banco.commit()
 
 
 def chamar_cadastro():
@@ -27,7 +31,8 @@ def chamar_cadastro():
 
 def chamar_novo_cliente():
     novo_cliente.show()
-
+    novo_cliente.pushButton_2.clicked.connect(adicionar_cliente)
+    novo_cliente.pushButton.clicked.connect(adicionar_pet)
 
 def chamar_agenda():
     ambiente_agenda.show()
@@ -46,6 +51,53 @@ def chamar_novo_produto_servico():
 def chamar_plano_de_serviço():
     plano_de_serviço.show()
 
+def adicionar_cliente():
+    nome = novo_cliente.lineEdit_2.text()
+    contato = novo_cliente.lineEdit_3.text()
+    cep = novo_cliente.lineEdit_4.text()
+    bairro = novo_cliente.lineEdit_5.text()
+    logradouro = novo_cliente.lineEdit_6.text()
+    numero = novo_cliente.lineEdit_8.text()
+    complemento = novo_cliente.lineEdit_7.text()
+
+
+    cursor = banco.cursor()
+    comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, CEP, BAIRRO, LOGRADOURO, NUMERO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    dados = (str(nome), str(contato), cep, str(bairro), str(logradouro), numero, str(complemento))
+    cursor.execute(comando_SQL, dados)
+    banco.commit()
+
+def adicionar_pet():
+    nome = novo_cliente.lineEdit_9.text()
+    contato_dono = novo_cliente.lineEdit_12.text()
+    idade = novo_cliente.lineEdit_11.text()
+    raca = novo_cliente.lineEdit_10.text()
+    porte = ''
+    sexo = ''
+    castrado = ''
+    if novo_cliente.radioButton_3.isChecked():
+        porte = 'P'
+    elif novo_cliente.radioButton_5.isChecked():
+        porte = 'M'
+    elif novo_cliente.radioButton_4.isChecked():
+        porte = 'G'
+
+    if novo_cliente.radioButton_2.isChecked():
+        sexo = 'F'
+    elif novo_cliente.radioButton.isChecked():
+        sexo = 'M'
+
+    if novo_cliente.radioButton_9.isChecked():
+        sexo = 'S'
+    elif novo_cliente.radioButton_10.isChecked():
+        sexo = 'N'
+
+    cursor = banco.cursor()
+    comando_SQL = "INSERT INTO TB_CLIENTE (NOME, FK_CONTATO_DONO, IDADE, PORTE, SEXO, CASTRADO, RACA) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    dados = (str(nome), str(contato_dono), str(idade), str(porte), str(sexo), str(castrado), str(raca))
+    cursor.execute(comando_SQL, dados)
+    banco.commit()
+
 def adicionar_produto():
     descricao = novo_produto_serviço.lineEdit_2.text()
     codigo_barras = novo_produto_serviço.lineEdit_3.text()
@@ -54,7 +106,6 @@ def adicionar_produto():
     marca = novo_produto_serviço.lineEdit_6.text()
 
     cursor = banco.cursor()
-    # verificacao_id_ja_preenchido = "SELECT TOP 1 * FROM "
     comando_SQL = "INSERT INTO TB_PRODUTO (DESCRICAO, CODIGO_BARRAS, PRECO, FORNECEDOR, MARCA) VALUES (%s,%s,%s,%s,%s)"
     dados = (str(descricao), str(codigo_barras), preco, str(fornecedor), str(marca))
     cursor.execute(comando_SQL, dados)
