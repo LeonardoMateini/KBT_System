@@ -4,12 +4,62 @@ import mysql.connector
 from mysql.connector import connect, cursor
 from reportlab.pdfgen import canvas
 
+valor_id= 0
+
 banco = mysql.connector.connect(
     host="localhost",
     user="root",
     passwd="",
     database="kbt_system"
 )
+
+def editar_dados():
+    global valor_id
+    linha = listar_dados_produtos.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute("SELECT id FROM produto")
+    id_lidos = cursor.fetchall()
+    id_valor = id_lidos[linha][0]
+    cursor.execute("SELECT * FROM produto WHERE id="+str(id_valor))
+    produto = cursor.fetchall()
+    editar_produto.show()
+
+    valor_id = id_valor
+
+    editar_produto.lineEdit.setText(str(produto[0][0]))
+    editar_produto.lineEdit_2.setText(str(produto[0][1]))
+    editar_produto.lineEdit_3.setText(str(produto[0][2]))
+    editar_produto.lineEdit_4.setText(str(produto[0][3]))
+    editar_produto.lineEdit_5.setText(str(produto[0][4]))
+    editar_produto.lineEdit_6.setText(str(produto[0][5]))
+
+def salvar_produto_editado():
+    # pegar o id
+    global valor_id
+    # pegar o que foi digitado na linha
+    descricao = editar_produto.lineEdit_2.text()
+    codigo_de_barras = editar_produto.lineEdit_3.text()
+    preco = editar_produto.lineEdit_4.text()
+    fornecedor = editar_produto.lineEdit_5.text()
+    marca = editar_produto.lineEdit_6.text()
+    # atualizar os dados no banco
+    salvar = banco.cursor()
+    salvar.execute("UPDATE produto SET descricao='{}', codigo_de_barras='{}', preco='{}', fornecedor='{}', marca='{}' WHERE id={}".format(descricao,codigo_de_barras,preco,fornecedor,marca,valor_id))
+    #fechar e atualizar dados
+    editar_produto.close()
+    listar_dados_produtos.close()
+    listar_produtos()
+
+def excluir_dados():
+    linha = listar_dados_produtos.tableWidget.currentRow()
+    listar_dados_produtos.tableWidget.removeRow(linha)
+
+    excluir = banco.cursor()
+    excluir.execute("SELECT id FROM produto")
+    id_lidos = excluir.fetchall()
+    id_valor = id_lidos[linha][0]
+    excluir.execute("DELETE FROM produto WHERE id=" + str(id_valor))
 
 def gerar_pdf():
     tb_produtos = banco.cursor()
@@ -131,11 +181,18 @@ novo_cliente = uic.loadUi('Novo Cliente.ui')
 
 listar_dados_produtos = uic.loadUi('Listar dados produtos.ui')
 
+editar_produto = uic.loadUi('Editar produto.ui')
+
 novo_produto_serviço = uic.loadUi('Novo Produto e Serviço.ui')
 novo_produto_serviço.pushButton_2.clicked.connect(add_produto)
 novo_produto_serviço.pushButton_5.clicked.connect(add_servico)
 novo_produto_serviço.pushButton.clicked.connect(listar_produtos)
+
 listar_dados_produtos.pushButton.clicked.connect(gerar_pdf)
+listar_dados_produtos.pushButton_2.clicked.connect(excluir_dados)
+listar_dados_produtos.pushButton_3.clicked.connect(editar_dados)
+
+editar_produto.pushButton.clicked.connect(salvar_produto_editado)
 
 home.show()
 app.exec()
