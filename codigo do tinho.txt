@@ -1,0 +1,53 @@
+Cria essa tabela pra funfar as coisas:
+
+create table plano(
+	cpf BIGNIT NOT NULL AUTO_INCREMENT,
+	categoria VARCHAR(20),
+	pagamento VARCHAR(20),
+	PRIMARY KEY(cpf)
+);
+
+função pra adicionar as coisas no banco:
+def add_plano():
+    
+    linha1 = plano_de_serviço.lineEdit.text()
+    categoria=''
+    pagamento=''
+    
+    if plano_de_serviço.radioButton.isChecked():
+        print('Plano mensal foi selecionado')
+        categoria="Mensal"
+    elif plano_de_serviço.radioButton_2.isChecked():
+        print('Plano semestral foi selecionado')
+        categoria='Semestral'
+    else:
+        print('Plano anual foi selecionado')
+        categoria="anual"
+    
+    if plano_de_serviço.checkBox.isChecked():
+        print('Crédito foi selecionado')
+        pagamento="Credito"
+    elif plano_de_serviço.checkBox_2.isChecked():
+        print('Débito foi selecionado')
+        pagamento="Debito"
+    else:
+        print('Dinheiro foi selecionado')
+        pagamento='Dinheiro'
+    
+    bd_plano= banco.cursor()
+    comando_SQL = "INSERT INTO plano (cpf,categoria,pagamento) VALUES(%s,%s,%s)"
+    dados = (str(linha1), categoria, pagamento)
+    bd_plano.execute(comando_SQL, dados)
+    banco.commit()
+
+pra chamar a tela adciona no chamar cadastro:
+
+ambiente_cadastro.pushButton_7.clicked.connect(chamar_plano_de_serviço)
+
+def chamar_plano_de_serviço():
+    plano_de_serviço.show()
+
+
+no final do código coloca isso daq:
+plano_de_serviço= uic.loadUi('Contratar Plano de Serviço.ui')
+plano_de_serviço.pushButton.clicked.connect(add_plano)
