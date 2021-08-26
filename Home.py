@@ -10,19 +10,22 @@ banco = mysql.connector.connect(
     database="DB_KBT_SYSTEM"
 )
 # cursor = banco.cursor()
-# comando_SQL = """CREATE TABLE TB_PET(
-#       NOME			VARCHAR(50)		NOT NULL
-#   ,   FK_CONTATO_DONO INT             NOT NULL
-# 	,	IDADE			INT
-# 	,	PORTE			CHAR(1)
-# 	,	SEXO 			CHAR(1)         NOT NULL
-# 	,   CASTRADO        CHAR(1)
-# 	,	RACA			VARCHAR(30)
-# 	,	CONSTRAINT FK_CONTATO_DONO FOREIGN KEY (FK_CONTATO_DONO) REFERENCES TB_CLIENTE (CONTATO)
+# comando_SQL = """CREATE TABLE TB_CLIENTE(
+# 		NOME			    VARCHAR(50)		NOT NULL
+# 	,	CONTATO		        BIGINT		    NOT NULL
+# 	,	CEP			        BIGINT
+# 	,	BAIRRO			    VARCHAR(50)
+# 	,	LOGRADOURO		    VARCHAR(50)
+# 	,	NUMERO 		        INT
+# 	,	COMPLEMENTO		    VARCHAR(50)
+# 	,	PLANO_SERVICO		VARCHAR(15)
+# 	,	DATA_CONTRATACAO	DATE
+# 	,	DATA_VENCIMENTO	    DATE
+# 	,	FORMA_PAGAMENTO	    VARCHAR(15)
+# 	,	PRIMARY KEY		    (CONTATO)
 # );"""
 # cursor.execute(comando_SQL)
 # banco.commit()
-
 
 def chamar_cadastro():
     ambiente_cadastro.show()
@@ -67,8 +70,27 @@ def adicionar_cliente():
 
 
     cursor = banco.cursor()
-    comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, CEP, BAIRRO, LOGRADOURO, NUMERO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    dados = (str(nome), str(contato), cep, str(bairro), str(logradouro), numero, str(complemento))
+    verificar_chave = (f'SELECT * FROM TB_CLIENTE WHERE CONTATO = {contato};')
+    cursor.execute(verificar_chave)
+    dados_lidos = cursor.fetchall()
+    if len(dados_lidos) > 0:
+        print('Já existe regisro para esse id')
+
+    comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, BAIRRO, LOGRADOURO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s)"
+    dados = (str(nome), str(contato), str(bairro), str(logradouro), str(complemento))
+
+    if cep != '' and numero != '':
+        comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, CEP, BAIRRO, LOGRADOURO, NUMERO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        dados = (str(nome), str(contato), cep, str(bairro), str(logradouro), numero, str(complemento))
+
+    elif cep == '' and numero !='':
+        comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, BAIRRO, LOGRADOURO, NUMERO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s,%s)"
+        dados = (str(nome), str(contato), str(bairro), str(logradouro), numero, str(complemento))
+
+    elif cep != '' and numero == '':
+        comando_SQL = "INSERT INTO TB_CLIENTE (NOME, CONTATO, CEP, BAIRRO, LOGRADOURO, COMPLEMENTO) VALUES (%s,%s,%s,%s,%s,%s)"
+        dados = (str(nome), str(contato), cep, str(bairro), str(logradouro), str(complemento))
+           
     cursor.execute(comando_SQL, dados)
     banco.commit()
 
