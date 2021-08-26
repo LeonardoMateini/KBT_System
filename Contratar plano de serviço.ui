@@ -166,83 +166,71 @@
      <string>cancelar</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>210</x>
       <y>230</y>
-      <width>82</width>
-      <height>17</height>
+      <width>196</width>
+      <height>19</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Mensal</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="text">
+        <string>Mensal</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_2">
+       <property name="text">
+        <string>Semestral</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_3">
+       <property name="text">
+        <string>Anual</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <widget class="QRadioButton" name="radioButton_2">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>230</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Semestral</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_3">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>230</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Anual</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_4">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>250</x>
       <y>310</y>
-      <width>82</width>
-      <height>17</height>
+      <width>188</width>
+      <height>19</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Crédito</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_5">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>310</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Débito</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_6">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>310</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Dinheiro</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="text">
+        <string>Crédito</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_2">
+       <property name="text">
+        <string>Débito</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_3">
+       <property name="text">
+        <string>Dinheiro</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
