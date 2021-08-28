@@ -24,10 +24,10 @@ def add_plano():
         print('Plano anual foi selecionado')
         categoria="anual"
     
-    if plano_de_serviço.checkBox.isChecked():
+    if plano_de_serviço.radioButton_4.isChecked():
         print('Crédito foi selecionado')
         pagamento="Credito"
-    elif plano_de_serviço.checkBox_2.isChecked():
+    elif plano_de_serviço.radioButton_5.isChecked():
         print('Débito foi selecionado')
         pagamento="Debito"
     else:

@@ -199,32 +199,32 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>240</x>
       <y>310</y>
-      <width>188</width>
+      <width>196</width>
       <height>19</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QCheckBox" name="checkBox">
+      <widget class="QRadioButton" name="radioButton_4">
        <property name="text">
         <string>Crédito</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox_2">
+      <widget class="QRadioButton" name="radioButton_5">
        <property name="text">
         <string>Débito</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox_3">
+      <widget class="QRadioButton" name="radioButton_6">
        <property name="text">
         <string>Dinheiro</string>
        </property>
