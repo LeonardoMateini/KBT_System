@@ -11,15 +11,12 @@ banco = mysql.connector.connect(
     database="DB_KBT_SYSTEM"
 )
 # cursor = banco.cursor()
-# comando_SQL = """CREATE TABLE TB_PRODUTO(
-# 		STATUS			CHAR(1)		NOT NULL
-# 	,	ID			INT			AUTO_INCREMENT
-# 	,	DESCRICAO		VARCHAR(50)		NOT NULL
-# 	,	CODIGO_BARRAS		VARCHAR(12)
-# 	,	PRECO			DECIMAL(15, 2)		NOT NULL
-# 	,	FORNECEDOR		VARCHAR(50)
-# 	,	MARCA			VARCHAR(50)
-# 	,	PRIMARY KEY (ID)
+# comando_SQL = """create table TB_SERVICO (
+# 	ID INT NOT NULL AUTO_INCREMENT,
+# 	STATUS CHAR(1) DEFAULT 'A',
+# 	DESCRICAO varchar (50) NOT NULL,
+# 	PRECO DOUBLE,
+# 	PRIMARY KEY (id)
 # );"""
 # cursor.execute(comando_SQL)
 # banco.commit()
@@ -55,11 +52,11 @@ def chamar_novo_produto_servico():
     novo_produto_serviço.pushButton_6.clicked.connect(listar_servicos_inativos)
 
     listar_dados_produtos.pushButton.clicked.connect(gerar_pdf_produto)
-    # listar_dados_produtos.pushButton_2.clicked.connect(excluir_dados_produtos)
+    listar_dados_produtos.pushButton_2.clicked.connect(desativar_ativar_dados_produto)
     listar_dados_produtos.pushButton_3.clicked.connect(editar_dados_produtos)
 
     listar_dados_servicos.pushButton.clicked.connect(gerar_pdf_servico)
-    # listar_dados_servicos.pushButton_2.clicked.connect(excluir_dados_servico)
+    listar_dados_servicos.pushButton_2.clicked.connect(desativar_ativar_dados_servico)
     listar_dados_servicos.pushButton_3.clicked.connect(editar_dados_servico)
 
     editar_produto.pushButton.clicked.connect(salvar_produto_editado)
@@ -138,6 +135,7 @@ def adicionar_pet():
     porte = ''
     sexo = ''
     castrado = ''
+
     if novo_cliente.radioButton_3.isChecked():
         porte = 'P'
     elif novo_cliente.radioButton_5.isChecked():
@@ -155,16 +153,36 @@ def adicionar_pet():
     elif novo_cliente.radioButton_10.isChecked():
         sexo = 'N'
 
-    cursor = banco.cursor()
-    comando_SQL = "INSERT INTO TB_CLIENTE (NOME, FK_CONTATO_DONO, IDADE, PORTE, SEXO, CASTRADO, RACA) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    dados = (str(nome), str(contato_dono), str(idade), str(porte), str(sexo), str(castrado), str(raca))
-    cursor.execute(comando_SQL, dados)
-    banco.commit()
+    try:
+        cursor = banco.cursor()
+        comando_SQL = "INSERT INTO TB_PET (NOME, FK_CONTATO_DONO, IDADE, PORTE, SEXO, CASTRADO, RACA) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        dados = (str(nome), contato_dono, idade, str(porte), str(sexo), str(castrado), str(raca))
+        cursor.execute(comando_SQL, dados)
+        banco.commit()
 
-    novo_cliente.lineEdit_9.setText("")
-    novo_cliente.lineEdit_12.setText("")
-    novo_cliente.lineEdit_11.setText("")
-    novo_cliente.lineEdit_10.setText("")
+    except:
+        #se o campo obrigató contato for vazio imprimir essa mensagem
+        if contato_dono == '' or nome == '':
+            QMessageBox.about(novo_cliente, 'Erro', 'Campos obrigatórios não foram preenchidos.')
+
+        if contato_dono != '' and (type(contato_dono) == int()):
+            cursor1 = banco.cursor()
+            verifica_chave = (f'SELECT * FROM TB_PET WHERE FK_CONTATO_DONO = {contato_dono};')
+            cursor1.execute(verifica_chave)
+            dados_lidos = cursor1.fetchall()
+            valor_lido = dados_lidos
+            if len(dados_lidos) > 0:
+                QMessageBox.about(novo_cliente, 'Erro', 'Já existe regisro para esse contato')
+
+        if (contato_dono != '') and (type(contato_dono) != int()):
+            QMessageBox.about(novo_cliente, 'Erro', 'Contato_cliente deve ter somente números')
+
+    #Após passar pelo except ele vai executar esse bloco
+    else:
+        novo_cliente.lineEdit_9.setText("")
+        novo_cliente.lineEdit_12.setText("")
+        novo_cliente.lineEdit_11.setText("")
+        novo_cliente.lineEdit_10.setText("")
 
 def adicionar_produto():
     descricao = novo_produto_serviço.lineEdit.text()
@@ -173,33 +191,70 @@ def adicionar_produto():
     fornecedor = novo_produto_serviço.lineEdit_3.text()
     marca = novo_produto_serviço.lineEdit_5.text()
 
-    cursor = banco.cursor()
-    comando_SQL = "INSERT INTO TB_PRODUTO (STATUS, DESCRICAO, CODIGO_BARRAS, PRECO, FORNECEDOR, MARCA) VALUES ('A',%s,%s,%s,%s,%s)"
-    dados = (str(descricao), str(codigo_barras), preco, str(fornecedor), str(marca))
-    cursor.execute(comando_SQL, dados)
-    banco.commit()
+    try:
+        cursor = banco.cursor()
+        comando_SQL = "INSERT INTO TB_PRODUTO (DESCRICAO, CODIGO_BARRAS, PRECO, FORNECEDOR, MARCA) VALUES (%s,%s,%s,%s,%s)"
+        dados = (str(descricao), str(codigo_barras), preco, str(fornecedor), str(marca))
+        cursor.execute(comando_SQL, dados)
+        banco.commit()
 
-    novo_produto_serviço.lineEdit.setText("")
-    novo_produto_serviço.lineEdit_4.setText("")
-    novo_produto_serviço.lineEdit_2.setText("")
-    novo_produto_serviço.lineEdit_3.setText("")
-    novo_produto_serviço.lineEdit_5.setText("")
+    except:
+        # se o campo obrigató contato for vazio imprimir essa mensagem
+        if descricao == '' or codigo_barras == '' or preco == '':
+            QMessageBox.about(novo_cliente, 'Erro', 'Campos obrigatórios não foram preenchidos.')
+
+        if codigo_barras != '' and (type(codigo_barras) == int()):
+            cursor1 = banco.cursor()
+            verifica_chave = (f'SELECT * FROM TB_PET WHERE CONTATO = {codigo_barras};')
+            cursor1.execute(verifica_chave)
+            dados_lidos = cursor1.fetchall()
+            valor_lido = dados_lidos
+            if len(dados_lidos) > 0:
+                QMessageBox.about(novo_cliente, 'Erro', 'Já existe regisro para esse código de barras.')
+
+        if (codigo_barras != '') and (type(codigo_barras) != int()):
+            QMessageBox.about(novo_cliente, 'Erro', 'Cdigo de barras deve ter somente números')
+
+    else:
+        novo_produto_serviço.lineEdit.setText("")
+        novo_produto_serviço.lineEdit_4.setText("")
+        novo_produto_serviço.lineEdit_2.setText("")
+        novo_produto_serviço.lineEdit_3.setText("")
+        novo_produto_serviço.lineEdit_5.setText("")
 
 def adicionar_servico():
     descricao = novo_produto_serviço.lineEdit_6.text()
     preco = novo_produto_serviço.lineEdit_7.text()
 
-    cursor = banco.cursor()
+    try:
+        cursor = banco.cursor()
+        comando_SQL = "INSERT INTO TB_SERVICO (DESCRICAO, PRECO) VALUES (%s,%s)"
+        dados = (str(descricao), preco)
+        cursor.execute(comando_SQL, dados)
+        banco.commit()
 
-    comando_SQL = "INSERT INTO TB_SERVICO (STATUS, DESCRICAO, PRECO) VALUES ('A',%s,%s)"
-    dados = (str(descricao), preco)
-    cursor.execute(comando_SQL, dados)
-    banco.commit()
+    except:
+        # se o campo obrigató contato for vazio imprimir essa mensagem
+        if descricao == '':
+            QMessageBox.about(novo_cliente, 'Erro', 'Campo obrigatório não foi preenchido.')
 
-    novo_produto_serviço.lineEdit_6.setText("")
-    novo_produto_serviço.lineEdit_7.setText("")
+        if descricao != '' and (type(preco) == str()):
+            cursor1 = banco.cursor()
+            verifica_chave = (f'SELECT * FROM TB_PET WHERE CONTATO = {descricao};')
+            cursor1.execute(verifica_chave)
+            dados_lidos = cursor1.fetchall()
+            valor_lido = dados_lidos
+            if len(dados_lidos) > 0:
+                QMessageBox.about(novo_cliente, 'Erro', 'Já existe regisro para essa descrição.')
+
+        if (preco != '') and (type(preco) != float()):
+            QMessageBox.about(novo_cliente, 'Erro', 'Preço deve ter somente números')
+    else:
+        novo_produto_serviço.lineEdit_6.setText("")
+        novo_produto_serviço.lineEdit_7.setText("")
 
 def listar_produtos():
+    global status_produto
     listar_dados_produtos.show()
 
     cursor = banco.cursor()
@@ -208,13 +263,16 @@ def listar_produtos():
     dados_lidos = cursor.fetchall()
 
     listar_dados_produtos.tableWidget.setRowCount(len(dados_lidos))
-    listar_dados_produtos.tableWidget.setColumnCount(7)
+    listar_dados_produtos.tableWidget.setColumnCount(6)
 
     for i in range(0, len(dados_lidos)):
-        for j in range(0, 7):
+        for j in range(0, 6):
             listar_dados_produtos.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 
+    status_produto = 'A'
+
 def listar_produtos_inativos():
+    global status_produto
     listar_dados_produtos.show()
 
     cursor = banco.cursor()
@@ -223,13 +281,16 @@ def listar_produtos_inativos():
     dados_lidos = cursor.fetchall()
 
     listar_dados_produtos.tableWidget.setRowCount(len(dados_lidos))
-    listar_dados_produtos.tableWidget.setColumnCount(7)
+    listar_dados_produtos.tableWidget.setColumnCount(6)
 
     for i in range(0, len(dados_lidos)):
-        for j in range(0, 7):
+        for j in range(0, 6):
             listar_dados_produtos.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 
+    status_produto = 'I'
+
 def listar_servicos():
+    global status_servico
     listar_dados_servicos.show()
 
     cursor = banco.cursor()
@@ -244,7 +305,10 @@ def listar_servicos():
         for j in range(0, 4):
             listar_dados_servicos.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 
+    status_servico = 'A'
+
 def listar_servicos_inativos():
+    global status_servico
     listar_dados_servicos.show()
 
     cursor = banco.cursor()
@@ -252,59 +316,57 @@ def listar_servicos_inativos():
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
-    listar_dados_produtos.tableWidget.setRowCount(len(dados_lidos))
-    listar_dados_produtos.tableWidget.setColumnCount(4)
+    listar_dados_servicos.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_servicos.tableWidget.setColumnCount(4)
 
     for i in range(0, len(dados_lidos)):
         for j in range(0, 4):
-            listar_dados_produtos.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+            listar_dados_servicos.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+    status_servico = 'I'
 
 def editar_dados_produtos():
-    global valor_id_produto
+    global codigo_barras_valor, status_produto
     linha = listar_dados_produtos.tableWidget.currentRow()
 
     cursor = banco.cursor()
-    cursor.execute("SELECT ID FROM TB_PRODUTO")
-    id_lidos = cursor.fetchall()
-    id_valor = id_lidos[linha][0]
-    cursor.execute("SELECT * FROM TB_PRODUTO WHERE ID ="+str(id_valor))
+    cursor.execute(f"SELECT CODIGO_BARRAS FROM TB_PRODUTO WHERE STATUS = '{status_produto}'")
+    codigo_barras_lido = cursor.fetchall()
+    codigo_barras_valor = codigo_barras_lido[linha][0]
+    cursor.execute("SELECT * FROM TB_PRODUTO WHERE CODIGO_BARRAS ="+str(codigo_barras_valor))
     produto = cursor.fetchall()
     editar_produto.show()
 
-    valor_id_produto = id_valor
-
-    editar_produto.lineEdit_7.setText(str(produto[0][0]))
-    editar_produto.lineEdit.setText(str(produto[0][1]))
-    editar_produto.lineEdit_2.setText(str(produto[0][2]))
-    editar_produto.lineEdit_3.setText(str(produto[0][3]))
-    editar_produto.lineEdit_4.setText(str(produto[0][4]))
-    editar_produto.lineEdit_5.setText(str(produto[0][5]))
-    editar_produto.lineEdit_6.setText(str(produto[0][6]))
+    editar_produto.lineEdit.setText(str(produto[0][0]))
+    editar_produto.lineEdit_2.setText(str(produto[0][1]))
+    editar_produto.lineEdit_3.setText(str(produto[0][2]))
+    editar_produto.lineEdit_4.setText(str(produto[0][3]))
+    editar_produto.lineEdit_5.setText(str(produto[0][4]))
+    editar_produto.lineEdit_6.setText(str(produto[0][5]))
 
 def editar_dados_servico():
-    global valor_id_servico
+    global valor_id_servico, status_servico
     linha = listar_dados_servicos.tableWidget.currentRow()
 
     cursor = banco.cursor()
-    cursor.execute("SELECT ID FROM TB_SERVICO")
+    cursor.execute(f"SELECT ID FROM TB_SERVICO WHERE STATUS ='{status_servico}'")
     id_lidos = cursor.fetchall()
-    id_valor = id_lidos[linha][1]
+    id_valor = id_lidos[linha][0]
     cursor.execute("SELECT * FROM TB_SERVICO WHERE ID ="+str(id_valor))
     servico = cursor.fetchall()
     editar_servico.show()
 
     valor_id_servico = id_valor
 
-    editar_servico.lineEdit_6.setText(str(servico[0][0]))
-    editar_servico.lineEdit_3.setText(str(servico[0][1]))
-    editar_servico.lineEdit_4.setText(str(servico[0][2]))
-    editar_servico.lineEdit_5.setText(str(servico[0][3]))
+    editar_servico.lineEdit_3.setText(str(servico[0][0]))
+    editar_servico.lineEdit_4.setText(str(servico[0][1]))
+    editar_servico.lineEdit_5.setText(str(servico[0][2]))
+    editar_servico.lineEdit_6.setText(str(servico[0][3]))
 
 def salvar_produto_editado():
     # pegar o id
-    global valor_id_produto
+    global codigo_barras_valor, status_produto
     # pegar o que foi digitado na linha
-    status = editar_produto.lineEdit_7.text()
+    status = editar_produto.lineEdit.text()
     descricao = editar_produto.lineEdit_2.text()
     codigo_barras = editar_produto.lineEdit_3.text()
     preco = editar_produto.lineEdit_4.text()
@@ -312,46 +374,88 @@ def salvar_produto_editado():
     marca = editar_produto.lineEdit_6.text()
     # atualizar os dados no banco
     cursor = banco.cursor()
-    cursor.execute(f"UPDATE TB_PRODUTO SET STATUS = '{status}', DESCRICAO='{descricao}', CODIGO_BARRAS='{codigo_barras}', PRECO='{preco}', FORNECEDOR='{fornecedor}', MARCA='{marca}' WHERE ID={valor_id_produto}")
+    cursor.execute(f"UPDATE TB_PRODUTO SET STATUS = '{status}', DESCRICAO='{descricao}', CODIGO_BARRAS='{codigo_barras}', PRECO='{preco}', FORNECEDOR='{fornecedor}', MARCA='{marca}' WHERE CODIGO_BARRAS={codigo_barras_valor}")
     #fechar e atualizar dados
     editar_produto.close()
     listar_dados_produtos.close()
-    listar_produtos()
+    if status_produto == 'A':
+        listar_produtos()
+    else:
+        listar_produtos_inativos()
 
 def salvar_servico_editado():
     # pegar o id
     global valor_id_servico
     # pegar o que foi digitado na linha
-    status = editar_produto.lineEdit_6.text()
-    descricao = editar_servico.lineEdit_4.text()
-    preco = editar_servico.lineEdit_5.text()
-    # atualizar os dados no banco
-    cursor = banco.cursor()
-    cursor.execute(f"UPDATE TB_SERVICO SET STATUS='{status}', DESCRICAO='{descricao}', PRECO='{preco}' WHERE ID={valor_id_servico}")
-    #fechar e atualizar dados
-    editar_servico.close()
-    listar_dados_servicos.close()
-    listar_servicos()
+    descricao = editar_servico.lineEdit_5.text()
+    preco = editar_servico.lineEdit_6.text()
 
-# def excluir_dados_produtos():
-#     linha = listar_dados_produtos.tableWidget.currentRow()
-#     listar_dados_produtos.tableWidget.removeRow(linha)
-#
-#     excluir = banco.cursor()
-#     excluir.execute("SELECT ID FROM TB_PRODUTO")
-#     id_lidos = excluir.fetchall()
-#     id_valor = id_lidos[linha][0]
-#     excluir.execute("UPDATE TB_PRODUTO SET STATUS = 'I' WHERE ID =" + str(id_valor))
-#
-# def excluir_dados_servico():
-#     linha = listar_dados_servicos.tableWidget.currentRow()
-#     listar_dados_servicos.tableWidget.removeRow(linha)
-#
-#     cursor = banco.cursor()
-#     cursor.execute("SELECT ID FROM TB_SERVICO")
-#     id_lidos = cursor.fetchall()
-#     id_valor = id_lidos[linha][0]
-#     cursor.execute("UPDATE TB_SERVICE SET STATUS = 'I' WHERE ID =" + str(id_valor))
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT STATUS FROM TB_SERVICO WHERE ID = {valor_id_servico}")
+    id_lidos = cursor.fetchall()
+    valor_status_lido = id_lidos[0][0]
+
+    # atualizar os dados no banco
+
+    try:
+        cursor.execute(f"UPDATE TB_SERVICO SET DESCRICAO='{descricao}', PRECO='{preco}' WHERE ID={valor_id_servico}")
+        banco.commit()
+    #fechar e atualizar dados
+    except:
+
+        if (preco != '') and (type(preco) != float()):
+            QMessageBox.about(novo_cliente, 'Erro', 'Preço deve ter somente números')
+    else:
+        editar_servico.close()
+        listar_dados_servicos.close()
+        if valor_status_lido == 'A':
+            listar_servicos()
+        else:
+            listar_servicos_inativos()
+
+def desativar_ativar_dados_produto():
+    global status_produto
+    linha = listar_dados_produtos.tableWidget.currentRow()
+    listar_dados_produtos.tableWidget.removeRow(linha)
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_PRODUTO WHERE STATUS = '{status_produto}'")
+    produtos_lidos = cursor.fetchall()
+    codigo_barras_lido = produtos_lidos[linha][2]
+    cursor.execute("SELECT * FROM TB_PRODUTO WHERE CODIGO_BARRAS =" + str(codigo_barras_lido))
+    produto = cursor.fetchall()
+
+    status_lido = produto[0][0]
+
+    if status_lido == 'A':
+        cursor.execute("UPDATE TB_PRODUTO SET STATUS = 'I' WHERE CODIGO_BARRAS ="+str(codigo_barras_lido))
+        banco.commit()
+
+    elif status_lido == 'I':
+        cursor.execute("UPDATE TB_PRODUTO SET STATUS = 'A' WHERE CODIGO_BARRAS ="+str(codigo_barras_lido))
+        banco.commit()
+
+def desativar_ativar_dados_servico():
+    global status_servico
+    linha = listar_dados_servicos.tableWidget.currentRow()
+    listar_dados_servicos.tableWidget.removeRow(linha)
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_SERVICO WHERE STATUS = '{status_servico}'")
+    id_lidos = cursor.fetchall()
+    id_valor = id_lidos[linha][0]
+    cursor.execute("SELECT * FROM TB_SERVICO WHERE ID =" + str(id_valor))
+    servico = cursor.fetchall()
+
+    status_lido = servico[0][1]
+
+    if status_lido == 'A':
+        cursor.execute("UPDATE TB_SERVICO SET STATUS = 'I' WHERE ID ="+str(id_valor))
+        banco.commit()
+
+    elif status_lido == 'I':
+        cursor.execute("UPDATE TB_SERVICO SET STATUS = 'A' WHERE ID ="+str(id_valor))
+        banco.commit()
 
 def gerar_pdf_produto():
     cursor = banco.cursor()

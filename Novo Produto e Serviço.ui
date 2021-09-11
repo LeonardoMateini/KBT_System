@@ -37,7 +37,7 @@
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string>Código de barras:</string>
+     <string>*Código de barras:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -107,7 +107,7 @@
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string>Preço (R$):</string>
+     <string>*Preço (R$):</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -177,7 +177,7 @@ border-color: rgb(0, 0, 0);</string>
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string>Descrição:</string>
+     <string>*Descrição:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -200,7 +200,7 @@ border-color: rgb(0, 0, 0);</string>
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string>Descrição:</string>
+     <string>*Descrição:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -361,7 +361,7 @@ border-color: rgb(0, 0, 0);</string>
      <string notr="true">background-color: rgb(128, 159, 168);</string>
     </property>
     <property name="text">
-     <string>Listar</string>
+     <string>Listar Produtos</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
@@ -416,7 +416,7 @@ border-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>570</y>
+      <y>549</y>
       <width>191</width>
       <height>41</height>
      </rect>

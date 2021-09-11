@@ -38,9 +38,9 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>40</x>
       <y>80</y>
-      <width>751</width>
+      <width>721</width>
       <height>31</height>
      </rect>
     </property>
@@ -50,15 +50,15 @@
      </font>
     </property>
     <property name="text">
-     <string>STATUS    ID                   Descrição               C. de Barras                  Preço                   Fornecedor                      Marca</string>
+     <string>STATUS          Descrição                   C. de Barras                  Preço                  Fornecedor                      Marca</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>31</x>
       <y>120</y>
-      <width>71</width>
+      <width>70</width>
       <height>41</height>
      </rect>
     </property>
@@ -66,7 +66,7 @@
    <widget class="QLineEdit" name="lineEdit_2">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>100</x>
       <y>120</y>
       <width>131</width>
       <height>41</height>
@@ -76,9 +76,9 @@
    <widget class="QLineEdit" name="lineEdit_3">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>230</x>
       <y>120</y>
-      <width>151</width>
+      <width>130</width>
       <height>41</height>
      </rect>
     </property>
@@ -86,9 +86,9 @@
    <widget class="QLineEdit" name="lineEdit_4">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>360</x>
       <y>120</y>
-      <width>81</width>
+      <width>100</width>
       <height>41</height>
      </rect>
     </property>
@@ -96,7 +96,7 @@
    <widget class="QLineEdit" name="lineEdit_5">
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>460</x>
       <y>120</y>
       <width>151</width>
       <height>41</height>
@@ -106,7 +106,7 @@
    <widget class="QLineEdit" name="lineEdit_6">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>610</x>
       <y>120</y>
       <width>151</width>
       <height>41</height>
@@ -124,16 +124,6 @@
     </property>
     <property name="text">
      <string>SALVAR</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_7">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
     </property>
    </widget>
   </widget>
