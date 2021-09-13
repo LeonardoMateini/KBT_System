@@ -32,6 +32,10 @@ def chamar_novo_cliente():
     novo_cliente.show()
     novo_cliente.pushButton_2.clicked.connect(adicionar_cliente)
     novo_cliente.pushButton.clicked.connect(adicionar_pet)
+    novo_cliente.pushButton_3.clicked.connect(listar_clientes)
+    novo_cliente.pushButton_4.clicked.connect(listar_clientes_inativos)
+    novo_cliente.pushButton_5.clicked.connect(listar_pets)
+    novo_cliente.pushButton_6.clicked.connect(listar_pets_inativos)
 
 def chamar_agenda():
     ambiente_agenda.show()
@@ -125,8 +129,6 @@ def adicionar_cliente():
         novo_cliente.lineEdit_8.setText("")
         novo_cliente.lineEdit_7.setText("")
 
-
-
 def adicionar_pet():
     nome = novo_cliente.lineEdit_9.text()
     contato_dono = novo_cliente.lineEdit_12.text()
@@ -149,9 +151,9 @@ def adicionar_pet():
         sexo = 'M'
 
     if novo_cliente.radioButton_9.isChecked():
-        sexo = 'S'
+        castrado = 'S'
     elif novo_cliente.radioButton_10.isChecked():
-        sexo = 'N'
+        castrado = 'N'
 
     try:
         cursor = banco.cursor()
@@ -159,6 +161,8 @@ def adicionar_pet():
         dados = (str(nome), contato_dono, idade, str(porte), str(sexo), str(castrado), str(raca))
         cursor.execute(comando_SQL, dados)
         banco.commit()
+
+        QMessageBox.about(novo_cliente, 'Ação Realizada', 'Pet cadastrado com sucesso.')
 
     except:
         #se o campo obrigató contato for vazio imprimir essa mensagem
@@ -252,6 +256,78 @@ def adicionar_servico():
     else:
         novo_produto_serviço.lineEdit_6.setText("")
         novo_produto_serviço.lineEdit_7.setText("")
+
+def listar_clientes():
+    global status_cliente
+    listar_dados_clientes.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * FROM TB_CLIENTE WHERE STATUS = 'A'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_clientes.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_clientes.tableWidget.setColumnCount(12)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 11):
+            listar_dados_clientes.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+    status_cliente = 'A'
+
+def listar_clientes_inativos():
+    global status_cliente
+    listar_dados_clientes.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * FROM TB_CLIENTE WHERE STATUS = 'I'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_clientes.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_clientes.tableWidget.setColumnCount(12)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 11):
+            listar_dados_clientes.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+    status_cliente = 'I'
+
+def listar_pets():
+    global status_pet
+    listar_dados_pets.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * FROM TB_PET WHERE STATUS = 'A'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_pets.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_pets.tableWidget.setColumnCount(9)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 8):
+            listar_dados_pets.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+    status_pet = 'A'
+
+def listar_pets_inativos():
+    global status_pet
+    listar_dados_pets.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * FROM TB_PET WHERE STATUS = 'I'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_pets.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_pets.tableWidget.setColumnCount(9)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 8):
+            listar_dados_pets.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+    status_pet = 'I'
 
 def listar_produtos():
     global status_produto
@@ -527,6 +603,10 @@ novo_cliente = uic.loadUi('Novo Cliente.ui')
 novo_produto_serviço = uic.loadUi('Novo Produto e Serviço.ui')
 
 plano_serviço = uic.loadUi('Contratar Plano Serviço.ui')
+
+listar_dados_clientes = uic.loadUi('Listar Dados Clientes.ui')
+
+listar_dados_pets = uic.loadUi('Listar Dados Pets.ui')
 
 listar_dados_produtos = uic.loadUi('Listar Dados Produtos.ui')
 
