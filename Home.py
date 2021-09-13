@@ -37,6 +37,9 @@ def chamar_novo_cliente():
     novo_cliente.pushButton_5.clicked.connect(listar_pets)
     novo_cliente.pushButton_6.clicked.connect(listar_pets_inativos)
 
+    listar_dados_clientes.pushButton_2.clicked.connect(desativar_ativar_dados_cliente)
+    listar_dados_pets.pushButton_2.clicked.connect(desativar_ativar_dados_pet)
+
 def chamar_agenda():
     ambiente_agenda.show()
     ambiente_agenda.pushButton_2.clicked.connect(chamar_novo_agendamento)
@@ -202,6 +205,8 @@ def adicionar_produto():
         cursor.execute(comando_SQL, dados)
         banco.commit()
 
+        QMessageBox.about(novo_cliente, 'Ação Realizada', 'Produto cadastrado com sucesso.')
+
     except:
         # se o campo obrigató contato for vazio imprimir essa mensagem
         if descricao == '' or codigo_barras == '' or preco == '':
@@ -236,6 +241,8 @@ def adicionar_servico():
         dados = (str(descricao), preco)
         cursor.execute(comando_SQL, dados)
         banco.commit()
+
+        QMessageBox.about(novo_cliente, 'Ação Realizada', 'Serviço cadastrado com sucesso.')
 
     except:
         # se o campo obrigató contato for vazio imprimir essa mensagem
@@ -488,6 +495,51 @@ def salvar_servico_editado():
             listar_servicos()
         else:
             listar_servicos_inativos()
+
+def desativar_ativar_dados_cliente():
+    global status_cliente
+    linha = listar_dados_clientes.tableWidget.currentRow()
+    listar_dados_clientes.tableWidget.removeRow(linha)
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_CLIENTE WHERE STATUS = '{status_cliente}'")
+    clientes_lidos = cursor.fetchall()
+    contato_cliente_lido = clientes_lidos[linha][2]
+    cursor.execute("SELECT * FROM TB_CLIENTE WHERE CONTATO =" + str(contato_cliente_lido))
+    cliente = cursor.fetchall()
+
+    status_lido = cliente[0][0]
+
+    if status_lido == 'A':
+        cursor.execute("UPDATE TB_CLIENTE SET STATUS = 'I' WHERE CONTATO ="+str(contato_cliente_lido))
+        banco.commit()
+
+    elif status_lido == 'I':
+        cursor.execute("UPDATE TB_CLIENTE SET STATUS = 'A' WHERE CONTATO ="+str(contato_cliente_lido))
+        banco.commit()
+
+def desativar_ativar_dados_pet():
+    global status_pet
+    linha = listar_dados_pets.tableWidget.currentRow()
+    listar_dados_pets.tableWidget.removeRow(linha)
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_PET WHERE STATUS = '{status_pet}'")
+    pets_lidos = cursor.fetchall()
+    contato_dono_lido = pets_lidos[linha][2]
+    nome_pet_lido = pets_lidos[linha][1]
+    cursor.execute(f"SELECT * FROM TB_PET WHERE FK_CONTATO_DONO = {str(contato_dono_lido)} AND NOME = '{nome_pet_lido}'")
+    pet = cursor.fetchall()
+
+    status_lido = pet[0][0]
+
+    if status_lido == 'A':
+        cursor.execute(f"UPDATE TB_PET SET STATUS = 'I' WHERE FK_CONTATO_DONO = {str(contato_dono_lido)} AND NOME = '{nome_pet_lido}'")
+        banco.commit()
+
+    elif status_lido == 'I':
+        cursor.execute(f"UPDATE TB_PET SET STATUS = 'A' WHERE FK_CONTATO_DONO = {str(contato_dono_lido)} AND NOME = '{nome_pet_lido}'")
+        banco.commit()
 
 def desativar_ativar_dados_produto():
     global status_produto
