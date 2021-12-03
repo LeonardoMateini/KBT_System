@@ -17,54 +17,95 @@
    <string notr="true">background-color: rgb(128, 159, 168);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(234, 255, 251);</string>
-      </property>
-      <property name="text">
-       <string>Venda</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(234, 255, 251);</string>
-      </property>
-      <property name="text">
-       <string>Agenda</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(234, 255, 251);</string>
-      </property>
-      <property name="text">
-       <string>Cadastro</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>0</y>
+      <width>260</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Agendamentos do dia</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>600</y>
+      <width>101</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>VISUALIZAR</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>60</y>
+      <width>581</width>
+      <height>511</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <attribute name="horizontalHeaderCascadingSectionResizes">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>160</number>
+    </attribute>
+    <attribute name="horizontalHeaderStretchLastSection">
+     <bool>true</bool>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>DATA</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>HORA</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>NOME PET</string>
+     </property>
+    </column>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -77,12 +118,54 @@ background-color: rgb(234, 255, 251);</string>
    </property>
    <widget class="QMenu" name="menuHome">
     <property name="title">
-     <string>Home</string>
+     <string>Cadastro</string>
     </property>
+    <addaction name="actionNovo_Cliente_Pet"/>
+    <addaction name="actionNovo_Produto_Servi_o"/>
+    <addaction name="actionContratar_Plano_de_Servi_o"/>
+   </widget>
+   <widget class="QMenu" name="menuAgendamento">
+    <property name="title">
+     <string>Agenda</string>
+    </property>
+    <addaction name="actionNovo_Agendamento"/>
+    <addaction name="actionAgendamentos"/>
+    <addaction name="actionAgenda_Finalizados"/>
    </widget>
    <addaction name="menuHome"/>
+   <addaction name="menuAgendamento"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNovo_Cliente_Pet">
+   <property name="text">
+    <string>Novo Cliente/Pet</string>
+   </property>
+  </action>
+  <action name="actionNovo_Produto_Servi_o">
+   <property name="text">
+    <string>Novo Produto/Serviço</string>
+   </property>
+  </action>
+  <action name="actionContratar_Plano_de_Servi_o">
+   <property name="text">
+    <string>Contratar Plano de Serviço</string>
+   </property>
+  </action>
+  <action name="actionNovo_Agendamento">
+   <property name="text">
+    <string>Novo Agendamento</string>
+   </property>
+  </action>
+  <action name="actionAgendamentos">
+   <property name="text">
+    <string>Agenda</string>
+   </property>
+  </action>
+  <action name="actionAgenda_Finalizados">
+   <property name="text">
+    <string>Agenda Finalizados</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

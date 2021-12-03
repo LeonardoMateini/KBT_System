@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
-    <height>646</height>
+    <width>1920</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>550</x>
       <y>20</y>
       <width>271</width>
       <height>31</height>
@@ -38,18 +38,39 @@
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>33</x>
       <y>80</y>
-      <width>721</width>
+      <width>1301</width>
       <height>411</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    <property name="maximumSize">
+     <size>
+      <width>1301</width>
+      <height>411</height>
+     </size>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+selection-background-color: rgb(85, 87, 83);</string>
+    </property>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>30</number>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>100</number>
+    </attribute>
+    <attribute name="horizontalHeaderHighlightSections">
+     <bool>false</bool>
+    </attribute>
     <column>
      <property name="text">
-      <string>STATUS</string>
+      <string>Nº CADASTRO</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string extracomment="ResizeToContents">STATUS</string>
      </property>
      <property name="font">
       <font>
@@ -109,35 +130,40 @@
     </column>
     <column>
      <property name="text">
-      <string>COMPLEMENTO</string>
+      <string>COMPLE.</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>PLANO_SERVIÇO</string>
+      <string>STATUS_PLA</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>DATA_CONTRATAÇÃO</string>
+      <string>PLANO</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>DATA_VENCIMENTO</string>
+      <string>DATA_CONTRA</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>FORMA_PAGAMENTO</string>
+      <string>DATA_VENC</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>FORM_PAG</string>
      </property>
     </column>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>521</y>
+      <x>450</x>
+      <y>592</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -154,8 +180,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>519</y>
+      <x>780</x>
+      <y>590</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -175,7 +201,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>791</width>
+     <width>1920</width>
      <height>22</height>
     </rect>
    </property>

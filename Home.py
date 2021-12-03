@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from random import randint
+from datetime import datetime
 import mysql.connector
 
 
@@ -13,17 +14,21 @@ banco = mysql.connector.connect(
     passwd='',
     database="DB_KBT_SYSTEM"
 )
-
+# banco = mysql.connector.connect(
+#     host='localhost:3307',
+#     user='root',
+#     passwd='',
+#     database="mysql-container"
+# )
 
 # cursor = banco.cursor()
-# comando_SQL = """CREATE TABLE TB_AGENDA(
-#       		FK_ID_AGENDAMENTO	BIGINT		NOT NULL
-#       	,	STATUS			CHAR(1)		DEFAULT 'A'
-#       	,	NOME_PET		VARCHAR(50)	NOT NULL
-#       	,	DATA			DATE		NOT NULL
-#    	,   	HORA 			TIME    	NOT NULL
-#    	,	CONSTRAINT FK_ID_AGENDAMENTO FOREIGN KEY (FK_ID_AGENDAMENTO) REFERENCES TB_AGENDAMENTO (ID)
-# );"""
+# comando_SQL = """CREATE TABLE TB_BAIXA_AGENDAMENTO(
+#       		ID_AGENDAMENTO		INT		NOT NULL
+#       	,	DESCRICAO_PRECO		VARCHAR(400)	NOT NULL
+#       	,	VALOR_TOTAL		DECIMAL(15, 2)	NOT NULL
+#       	,	FORMA_PAGAMENTO		VARCHAR(20)	NOT NULL
+#    	,	PRIMARY KEY		(ID_AGENDAMENTO)
+# )"""
 # cursor.execute(comando_SQL)
 # banco.commit()
 
@@ -46,15 +51,6 @@ def chamar_novo_cliente():
     editar_pet.pushButton.clicked.connect(salvar_pet_editado)
 
 
-def chamar_novo_agendamento():
-    novo_agendamento.show()
-    novo_agendamento.pushButton.clicked.connect(verifica_buscar_pet)
-    novo_agendamento.pushButton_2.clicked.connect(buscar_tipos_tosa)
-    novo_agendamento.calendarWidget.selectionChanged.connect(exibir_data_agendamento)
-    novo_agendamento.pushButton_3.clicked.connect(adicionar_novo_agendamento)
-
-    listar_pets_agendamento.pushButton_3.clicked.connect(exibe_dados_pet_agendamento)
-    listar_servicos_agendamento.pushButton.clicked.connect(exibe_tipos_tosa)
 
 def chamar_novo_produto_servico():
     novo_produto_serviço.show()
@@ -80,12 +76,68 @@ def chamar_novo_produto_servico():
 def chamar_plano_serviço():
     plano_serviço.show()
 
+def chamar_novo_agendamento():
+    novo_agendamento.show()
+    novo_agendamento.pushButton.clicked.connect(verifica_buscar_pet)
+    novo_agendamento.pushButton_2.clicked.connect(pegar_descricao_id_tosa_novo_agendamento)
+    novo_agendamento.calendarWidget.selectionChanged.connect(exibir_data_novo_agendamento)
+    novo_agendamento.pushButton_3.clicked.connect(adicionar_novo_agendamento)
+
+    listar_pets_agendamento.pushButton_3.clicked.connect(exibe_dados_pet_agendamento)
+
+
+
+def chamar_agenda():
+    listar_agenda()
+    listar_dados_agenda.pushButton_3.clicked.connect(listar_agendamento)
+
+    listar_dados_agendamento.pushButton_3.clicked.connect(editar_dados_agendamento)
+    listar_dados_agendamento.pushButton_4.clicked.connect(chamar_finalizar_dados_agendamento)
+
+    editar_agendamento.pushButton_2.clicked.connect(pegar_descricao_id_tosa_editar_agendamento)
+    editar_agendamento.calendarWidget.selectionChanged.connect(exibir_data_editar_agendamento)
+    editar_agendamento.pushButton_3.clicked.connect(salvar_agendamento_editado)
+
+    listar_produtos_baixa_agendamento.pushButton.clicked.connect(buscar_produto_baixa_agendamento_2)
+    listar_servicos_baixa_agendamento.pushButton.clicked.connect(buscar_servico_baixa_agendamento_2)
+
+    finalizar_agendamento.pushButton_2.clicked.connect(adicionar_produto_baixa_agendamento)
+    finalizar_agendamento.pushButton_3.clicked.connect(adicionar_servico_baixa_agendamento)
+    finalizar_agendamento.pushButton_6.clicked.connect(remover_item_finalizacao_agendamento)
+    finalizar_agendamento.pushButton_4.clicked.connect(finalizar_dados_agendamento)
+
+def chamar_agenda_finalizados():
+    listar_agenda_finalizados()
+    listar_dados_agenda.pushButton_3.clicked.connect(listar_agendamento)
+
+
+def chamar_funcoes_home():
+    home.show()
+    listar_agenda_home()
+    home.pushButton_3.clicked.connect(listar_agendamento)
+
+def chamar_funcoes_login():
+    login_tela.show()
+    login_tela.pushButton.clicked.connect(verifica_login)
+
+def verifica_login():
+    usuario = login_tela.lineEdit.text()
+    senha = login_tela.lineEdit_2.text()
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_LOGIN WHERE USUARIO = '{usuario}' AND SENHA = '{senha}'")
+    dados_lidos = cursor.fetchall()
+    if len(dados_lidos) > 0:
+        return chamar_funcoes_home(), login_tela.close()
+    else:
+        QMessageBox.about(login_tela, 'Erro', 'Usuário ou senha estão incorretos.')
+
 
 def criar_n_cadastro():
     global n_cadastro
     n_cadastro = randint(1, 10000)
     verificar_existencia_n_cadastro()
     print(n_cadastro)
+
 def verificar_existencia_n_cadastro():
     global n_cadastro
     n_cadastro = n_cadastro
@@ -94,10 +146,9 @@ def verificar_existencia_n_cadastro():
     dados_lidos = cursor.fetchall()
     if len(dados_lidos) > 0:
         criar_n_cadastro()
-        print('criando número novamente')
+
     else:
         adicionar_cliente()
-        print('chamou a função add cliente')
 
 def adicionar_cliente():
     global n_cadastro
@@ -132,7 +183,6 @@ def adicionar_cliente():
         banco.commit()
         mensagem = (f'Cliente cadastrado com sucesso.\nNº de Cadastro: {n_cadastro}')
         QMessageBox.about(novo_cliente, 'Ação Realizada', mensagem)
-        print('entrou no try')
 
     except:
         # se o campo obrigató contato for vazio imprimir essa mensagem
@@ -244,7 +294,7 @@ def adicionar_produto():
                 QMessageBox.about(novo_cliente, 'Erro', 'Já existe regisro para esse código de barras.')
 
         if (codigo_barras != '') and (type(codigo_barras) != int()):
-            QMessageBox.about(novo_cliente, 'Erro', 'Cdigo de barras deve ter somente números')
+            QMessageBox.about(novo_cliente, 'Erro', 'Código de barras deve ter somente números')
 
     else:
         novo_produto_serviço.lineEdit.setText("")
@@ -461,7 +511,7 @@ def listar_servicos_inativos():
 
 
 def editar_dados_cliente():
-    global contato_valor, status_cliente
+    global status_cliente
     linha = listar_dados_clientes.tableWidget.currentRow()
 
     cursor = banco.cursor()
@@ -777,7 +827,7 @@ def gerar_pdf_produto():
         pdf.drawString(530, 750 - y, str(dados_lidos[i][5]))
 
     pdf.save()
-    print("PDF FOI GERADO COM SUCESSO!")
+    QMessageBox.about(listar_dados_produtos, 'Ação Realizada', 'PDF gerado com sucesso.')
 
 
 def gerar_pdf_servico():
@@ -802,6 +852,7 @@ def gerar_pdf_servico():
         pdf.drawString(180, 750 - y, str(dados_lidos[i][2]))
 
     pdf.save()
+    QMessageBox.about(listar_dados_servicos, 'Ação Realizada', 'PDF gerado com sucesso.')
 
 
 def contratar_plano_servico():
@@ -851,7 +902,6 @@ def contratar_plano_servico():
         plano_serviço.lineEdit.setText("")
 
 
-# def novo_agentamento():
 # Verificar se existe algum pet para o nº de cadastro informado
 def verifica_buscar_pet():
     listar_pets_agendamento.show()
@@ -911,6 +961,17 @@ def exibe_dados_pet_agendamento():
     novo_agendamento.lineEdit_8.setText(str(pet[0][7]))
     novo_agendamento.lineEdit_7.setText(str(pet[0][8]))
 
+#busca o id e descrição da tosa e joga na tela de novo agendamento
+def pegar_descricao_id_tosa_novo_agendamento():
+    buscar_tipos_tosa()
+    listar_servicos_agendamento.pushButton.clicked.connect(exibe_tipos_tosa)
+
+
+#busca o id e descrição da tosa e joga na tela de editar agendamento
+def pegar_descricao_id_tosa_editar_agendamento():
+    buscar_tipos_tosa()
+    listar_servicos_agendamento.pushButton.clicked.connect(exibe_tipos_tosa_edicao)
+
 
 # busca todos os serviçõs que começam com a letra T
 def buscar_tipos_tosa():
@@ -927,8 +988,25 @@ def buscar_tipos_tosa():
         for j in range(0, 4):
             listar_servicos_agendamento.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 
+
 # exibe na tela de novo agendamento
 def exibe_tipos_tosa():
+    linha = listar_servicos_agendamento.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT * FROM TB_SERVICO WHERE STATUS = 'A' AND  DESCRICAO LIKE 'T%';")
+    servico_listados = cursor.fetchall()
+    id_servico = servico_listados[linha][0]
+    cursor.execute(f"SELECT * FROM TB_SERVICO WHERE ID = '{id_servico}'")
+    id_descricao_tosa = cursor.fetchall()
+
+    listar_servicos_agendamento.close()
+    novo_agendamento.lineEdit_11.setText(str(id_descricao_tosa[0][2]))
+    novo_agendamento.lineEdit_16.setText(str(id_descricao_tosa[0][0]))
+
+
+#exibe na tela de edição do agendamento
+def exibe_tipos_tosa_edicao():
     linha = listar_servicos_agendamento.tableWidget.currentRow()
 
     cursor = banco.cursor()
@@ -939,12 +1017,11 @@ def exibe_tipos_tosa():
     servico = cursor.fetchall()
 
     listar_servicos_agendamento.close()
-    # novo_agendamento.show()
-    # Dados do Servico
-    novo_agendamento.lineEdit_11.setText(str(servico[0][2]))
-    novo_agendamento.lineEdit_16.setText(str(servico[0][0]))
+    editar_agendamento.lineEdit_11.setText(str(servico[0][2]))
+    editar_agendamento.lineEdit_16.setText(str(servico[0][0]))
 
-def exibir_data_agendamento():
+
+def exibir_data_novo_agendamento():
     global data_para_insert
     data = str(novo_agendamento.calendarWidget.selectedDate())
     retirar_parentese1 = data.split('(')
@@ -968,8 +1045,34 @@ def exibir_data_agendamento():
     data_exibida = (f'{dia}/{mes}/{ano}')
     novo_agendamento.label_20.setText(data_exibida)
 
+
+def exibir_data_editar_agendamento():
+    global data_para_insert_editar_agendamento
+    data = str(editar_agendamento.calendarWidget.selectedDate())
+    retirar_parentese1 = data.split('(')
+
+    sem_parentese1 = retirar_parentese1[1]
+
+    retirar_parentese2 = sem_parentese1.split(')')
+    sem_parentese2 = retirar_parentese2[0]
+
+    retirar_virgula = sem_parentese2.split(',')
+
+    dia = retirar_virgula[2]
+    mes = retirar_virgula[1]
+    ano = retirar_virgula[0]
+
+    dia = dia.strip(' ')
+    mes = mes.strip(' ')
+    ano = ano.strip(' ')
+
+    data_para_insert_editar_agendamento = (f'{ano}-{mes}-{dia}')
+    data_exibida = (f'{dia}/{mes}/{ano}')
+    editar_agendamento.label_22.setText(data_exibida)
+
+
 def adicionar_novo_agendamento():
-    global data_para_insert
+    global data_para_insert, id_descricao_tosa
     n_cadastro = novo_agendamento.lineEdit_17.text()
     nome_pet = novo_agendamento.lineEdit_3.text()
     contato = novo_agendamento.lineEdit_2.text()
@@ -1008,6 +1111,7 @@ def adicionar_novo_agendamento():
 
         QMessageBox.about(novo_agendamento, 'Ação Realizada', 'Agendamento adicionado com sucesso.')
         adicionar_agendamento_na_agenda(n_cadastro, nome_pet, data_para_insert, hora)
+        chamar_funcoes_home()
 
     except:
         # se o campo obrigató contato for vazio imprimir essa mensagem
@@ -1029,6 +1133,7 @@ def adicionar_novo_agendamento():
         novo_agendamento.lineEdit_18.setText("")
         novo_agendamento.lineEdit_19.setText("")
 
+
 def adicionar_agendamento_na_agenda(n_cadastro, nome_pet, data, hora):
     cursor = banco.cursor()
     cursor.execute(f"SELECT ID FROM TB_AGENDAMENTO WHERE STATUS = 'A' AND N_CADASTRO = '{n_cadastro}' AND NOME_PET = '{nome_pet}' AND DATA = '{data}' AND HORA = '{hora}';")
@@ -1038,21 +1143,352 @@ def adicionar_agendamento_na_agenda(n_cadastro, nome_pet, data, hora):
     banco.commit()
 
 
+def listar_agenda():
+    global status_agenda
+    listar_dados_agenda.show()
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT DATE_FORMAT(DATA,'%d/%m'), TIME_FORMAT(HORA, '%h:%i'), NOME_PET FROM TB_AGENDA ORDER BY DATA;")
+
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_agenda.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_agenda.tableWidget.setColumnCount(3)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 3):
+            listar_dados_agenda.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+    status_agenda = 'A'
+
+def listar_agenda_home():
+    global status_agenda
+
+    cursor = banco.cursor()
+    data_atual = datetime.today().strftime('%Y-%m-%d')
+    cursor.execute(f"SELECT DATE_FORMAT(DATA,'%d/%m'), TIME_FORMAT(HORA, '%h:%i'), NOME_PET FROM TB_AGENDA WHERE STATUS = 'A' AND DATA = '{data_atual}' ORDER BY HORA ASC")
+
+    dados_lidos = cursor.fetchall()
+
+    home.tableWidget.setRowCount(len(dados_lidos))
+    home.tableWidget.setColumnCount(3)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 3):
+            home.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+    status_agenda = 'A'
+
+
+def alterar_status_agendamento_finalizado():
+    global id_valor_lido
+
+    cursor = banco.cursor()
+    cursor.execute(f"UPDATE TB_AGENDAMENTO SET STATUS = 'I' WHERE ID ='{id_valor_lido}'")
+    banco.commit()
+    cursor.execute(f"UPDATE TB_AGENDA SET STATUS = 'I' WHERE FK_ID_AGENDAMENTO ='{id_valor_lido}'")
+    banco.commit()
+
+def listar_agenda_finalizados():
+    global status_agenda
+    listar_dados_agenda.show()
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT DATE_FORMAT(DATA,'%d/%m'), TIME_FORMAT(HORA, '%h:%i'), NOME_PET FROM TB_AGENDA WHERE STATUS = 'I'ORDER BY DATA;")
+
+    dados_lidos = cursor.fetchall()
+
+    listar_dados_agenda.tableWidget.setRowCount(len(dados_lidos))
+    listar_dados_agenda.tableWidget.setColumnCount(3)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 3):
+            listar_dados_agenda.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+    status_agenda = 'I'
+
+
+def listar_agendamento():
+    global status_agenda, dados_editar_agendamento, id_valor_lido
+    linha = listar_dados_agenda.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT FK_ID_AGENDAMENTO FROM TB_AGENDA WHERE STATUS = '{status_agenda}'")
+    id_agendamento_lido = cursor.fetchall()
+    id_valor_lido = id_agendamento_lido[linha][0]
+    cursor.execute(f"SELECT * FROM TB_AGENDAMENTO WHERE ID = '{str(id_valor_lido)}'")
+    agendamento = cursor.fetchall()
+    cursor.execute(f"SELECT DATE_FORMAT(STR_TO_DATE(DATA, '%Y-%m-%d'), '%d/%m/%Y') FROM TB_AGENDAMENTO WHERE ID = '{str(id_valor_lido)}';")
+    data_agendamento = cursor.fetchall()
+    cursor.execute(f"SELECT CEP, BAIRRO, LOGRADOURO, NUMERO, COMPLEMENTO FROM TB_CLIENTE WHERE N_CADASTRO = '{str(agendamento[0][2])}'")
+    cliente = cursor.fetchall()
+    #pegar id, status e n_cadastro para mandar para a função editar agendamento
+    dados_editar_agendamento = [agendamento[0][0], agendamento[0][1], agendamento[0][2]]
+    dados_finalizar_agendamento = agendamento
+    listar_dados_agendamento.show()
+
+    #Id, nºcadastro
+    listar_dados_agendamento.label_34.setText(str(agendamento[0][0]))
+    listar_dados_agendamento.label_35.setText(str(agendamento[0][2]))
+    # nome pet, contato
+    listar_dados_agendamento.label_41.setText(str(agendamento[0][3]))
+    listar_dados_agendamento.label_37.setText(str(agendamento[0][13]))
+    # Idade, porte, sexo, castrado, raça
+    listar_dados_agendamento.label_38.setText(str(agendamento[0][14]))
+    listar_dados_agendamento.label_42.setText(str(agendamento[0][15]))
+    listar_dados_agendamento.label_43.setText(str(agendamento[0][16]))
+    listar_dados_agendamento.label_44.setText(str(agendamento[0][17]))
+    listar_dados_agendamento.label_39.setText(str(agendamento[0][18]))
+    # Banho, tosa, taxi pet, unhas, id_tosa, tipo_tosa
+    listar_dados_agendamento.label_27.setText(str(agendamento[0][6]))
+    listar_dados_agendamento.label_29.setText(str(agendamento[0][7]))
+    listar_dados_agendamento.label_26.setText(str(agendamento[0][8]))
+    listar_dados_agendamento.label_28.setText(str(agendamento[0][9]))
+    listar_dados_agendamento.label_36.setText(str(agendamento[0][10]))
+    listar_dados_agendamento.label_57.setText(str(agendamento[0][11]))
+    # data, hora
+    listar_dados_agendamento.label_25.setText(str(data_agendamento[0][0]))
+    listar_dados_agendamento.label_30.setText(str(agendamento[0][5]))
+    #obs
+    listar_dados_agendamento.label_56.setText(str(agendamento[0][12]))
+    #Cep, bairro, logradouro, completemento, número
+    listar_dados_agendamento.label_51.setText(str(cliente[0][0]))
+    listar_dados_agendamento.label_52.setText(str(cliente[0][1]))
+    listar_dados_agendamento.label_53.setText(str(cliente[0][2]))
+    listar_dados_agendamento.label_55.setText(str(cliente[0][3]))
+    listar_dados_agendamento.label_54.setText(str(cliente[0][4]))
+
+#preciso finalizar
+def editar_dados_agendamento():
+    #dados_editar_agendamento vem da função listar_agendamento, não sendo necessário fazer select novamente
+    global dados_editar_agendamento
+
+    editar_agendamento.show()
+    editar_agendamento.label_35.setText(str(dados_editar_agendamento[2]))
+    editar_agendamento.label_34.setText(str(dados_editar_agendamento[0]))
+    editar_agendamento.label_36.setText(str(dados_editar_agendamento[1]))
+
+
+def salvar_agendamento_editado():
+    global data_para_insert_editar_agendamento, dados_editar_agendamento
+
+    id_agendamento = dados_editar_agendamento[0]
+    hora = editar_agendamento.lineEdit_18.text()
+    banho = editar_agendamento.lineEdit_3.text()
+    tosa = editar_agendamento.lineEdit_4.text()
+    taxi_pet = editar_agendamento.lineEdit_5.text()
+    unhas = editar_agendamento.lineEdit_3.text()
+    tipo_tosa = editar_agendamento.lineEdit_11.text()
+    id_tosa = editar_agendamento.lineEdit_16.text()
+    observacao = editar_agendamento.lineEdit_7.text()
+
+    try:
+        cursor = banco.cursor()
+        # comando sql sem banho, tosa, taxi_pet e unhas
+        comando_Sql = (f"UPDATE TB_AGENDAMENTO SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}', TIPO_TOSA = '{tipo_tosa}', ID_TOSA = '{id_tosa}', OBSERVACAO = '{observacao}' WHERE ID = '{id_agendamento}'")
+
+        if banho.upper() != '' and (banho.upper() == 'A' or banho.upper() == 'N'):
+            comando_Sql = (f"UPDATE TB_AGENDAMENTO SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}', BANHO ='{banho.upper()}', TIPO_TOSA = '{tipo_tosa}', ID_TOSA = '{id_tosa}', OBSERVACAO = '{observacao}' WHERE ID = '{id_agendamento}'")
+
+        elif tosa.upper() != '' and (tosa.upper() == 'A' or tosa.upper() == 'N'):
+            comando_Sql = (f"UPDATE TB_AGENDAMENTO SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}', BANHO ='{banho.upper()}', TOSA = '{tosa.upper()}', TIPO_TOSA = '{tipo_tosa}', ID_TOSA = '{id_tosa}', OBSERVACAO = '{observacao}' WHERE ID = '{id_agendamento}'")
+
+        elif taxi_pet.upper() != '' and (taxi_pet.upper() == 'A' or taxi_pet.upper() == 'N'):
+            comando_Sql = (f"UPDATE TB_AGENDAMENTO SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}', BANHO ='{banho.upper()}', TOSA = '{tosa.upper()}', TAXI_PET ='{taxi_pet.upper()}', TIPO_TOSA = '{tipo_tosa}', ID_TOSA = '{id_tosa}', OBSERVACAO = '{observacao}' WHERE ID = '{id_agendamento}'")
+
+        elif unhas.upper() != '' and (unhas.upper() == 'A' or unhas.upper() == 'N'):
+            comando_Sql = (f"UPDATE TB_AGENDAMENTO SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}', BANHO ='{banho.upper()}', TOSA = '{tosa.upper()}', TAXI_PET ='{taxi_pet.upper()}', UNHAS= '{unhas.upper()}', TIPO_TOSA = '{tipo_tosa}', ID_TOSA = '{id_tosa}', OBSERVACAO = '{observacao}' WHERE ID = '{id_agendamento}'")
+
+        cursor.execute(comando_Sql)
+        banco.commit()
+
+        cursor.execute(f"UPDATE TB_AGENDA SET DATA = '{data_para_insert_editar_agendamento}',HORA = '{hora}' WHERE FK_ID_AGENDAMENTO ='{id_agendamento}'")
+        banco.commit()
+        QMessageBox.about(editar_agendamento, 'Ação realizada', 'Agendamento atualizado com sucesso.')
+
+    except:
+        QMessageBox.about(editar_agendamento, 'Erro', 'Uma data deve ser selecionada.')
+
+    else:
+        editar_agendamento.close()
+        listar_dados_agendamento.close()
+        listar_dados_agenda.close()
+        listar_dados_agenda.show()
+        chamar_funcoes_home()
+
+#vai em listar produtos e joga o produto selecionado na tela de baixa agendamento
+def adicionar_produto_baixa_agendamento():
+    global contador_linha_produto_servico
+    contador_linha_produto_servico = contador_linha_produto_servico + 1
+    finalizar_agendamento.tableWidget.setRowCount(contador_linha_produto_servico)
+
+    # ira listar todos os produtos
+    buscar_produto_baixa_agendamento()
+
+
+
+# ira listar todos os produtos
+def buscar_produto_baixa_agendamento():
+    listar_produtos_baixa_agendamento.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT DESCRICAO, PRECO FROM TB_PRODUTO WHERE STATUS = 'A'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_produtos_baixa_agendamento.tableWidget.setRowCount(len(dados_lidos))
+    listar_produtos_baixa_agendamento.tableWidget.setColumnCount(2)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 2):
+            listar_produtos_baixa_agendamento.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+# ira pegar a descricao e preço e jogar na tela de finalização de agendamento
+def buscar_produto_baixa_agendamento_2():
+    global valor_total, lista_produtos_servicos
+    linha = listar_produtos_baixa_agendamento.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT DESCRICAO, PRECO FROM TB_PRODUTO WHERE STATUS = 'A'")
+    produtos_listados = cursor.fetchall()
+    descricao_produto = produtos_listados[linha][0]
+
+    cursor.execute(f"SELECT DESCRICAO, PRECO FROM TB_PRODUTO WHERE DESCRICAO LIKE '{descricao_produto}'")
+    descricao_preco_produto = cursor.fetchall()
+
+    lista_produtos_servicos.append((descricao_preco_produto[0][0], descricao_preco_produto[0][1]))
+
+    for i in range(0, len(lista_produtos_servicos)):
+        for j in range(0, 2):
+            finalizar_agendamento.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(lista_produtos_servicos[i][j])))
+
+    valor_total = valor_total + descricao_preco_produto[0][1]
+    finalizar_agendamento.label_38.setText(str(valor_total))
+
+    listar_produtos_baixa_agendamento.close()
+
+# chama função buscar_servico_baixa_agendamento e buscar_servico_baixa_agendamento_2
+def adicionar_servico_baixa_agendamento():
+    global contador_linha_produto_servico
+    contador_linha_produto_servico = contador_linha_produto_servico + 1
+    finalizar_agendamento.tableWidget.setRowCount(contador_linha_produto_servico)
+
+    # ira listar todos os produtos
+    buscar_servico_baixa_agendamento()
+
+# ira listar todos os servicos
+def buscar_servico_baixa_agendamento():
+    listar_servicos_baixa_agendamento.show()
+
+    cursor = banco.cursor()
+    comando_SQL = "SELECT DESCRICAO, PRECO FROM TB_SERVICO WHERE STATUS = 'A'"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    listar_servicos_baixa_agendamento.tableWidget.setRowCount(len(dados_lidos))
+    listar_servicos_baixa_agendamento.tableWidget.setColumnCount(2)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 2):
+            listar_servicos_baixa_agendamento.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+# ira pegar a descricao e preço e jogar na tela de finalização de agendamento
+def buscar_servico_baixa_agendamento_2():
+    global valor_total, lista_produtos_servicos
+    linha = listar_servicos_baixa_agendamento.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT DESCRICAO, PRECO FROM TB_SERVICO WHERE STATUS = 'A'")
+    servicos_listados = cursor.fetchall()
+    descricao_servico = servicos_listados[linha][0]
+
+    cursor.execute(f"SELECT DESCRICAO, PRECO FROM TB_SERVICO WHERE DESCRICAO LIKE '{descricao_servico}'")
+    descricao_preco_servico = cursor.fetchall()
+
+    lista_produtos_servicos.append((descricao_preco_servico[0][0], descricao_preco_servico[0][1]))
+
+    for i in range(0, len(lista_produtos_servicos)):
+        for j in range(0, 2):
+            finalizar_agendamento.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(lista_produtos_servicos[i][j])))
+
+    valor_total = valor_total + descricao_preco_servico[0][1]
+    finalizar_agendamento.label_38.setText(str(valor_total))
+
+    listar_servicos_baixa_agendamento.close()
+
+def remover_item_finalizacao_agendamento():
+    global valor_total, lista_produtos_servicos
+    linha = finalizar_agendamento.tableWidget.currentRow()
+
+    valor_total = valor_total - lista_produtos_servicos[linha][1]
+    finalizar_agendamento.label_38.setText(str(valor_total))
+    finalizar_agendamento.tableWidget.removeRow(linha)
+
+def chamar_finalizar_dados_agendamento():
+    global id_valor_lido, contador_linha_produto_servico, valor_total, lista_produtos_servicos
+    listar_dados_agendamento.close()
+    finalizar_agendamento.show()
+
+    id = id_valor_lido
+    contador_linha_produto_servico = 0
+    valor_total = 0
+    lista_produtos_servicos = []
+    listar_produtos_baixa_agendamento.tableWidget.setColumnCount(2)
+    finalizar_agendamento.tableWidget.setRowCount(contador_linha_produto_servico)
+
+    cursor = banco.cursor()
+    cursor.execute(f"SELECT N_CADASTRO, NOME_PET, DATE_FORMAT(DATA,'%d/%m'), TIME_FORMAT(HORA, '%h:%i')  FROM TB_AGENDAMENTO WHERE ID = '{str(id)}' ORDER BY DATA")
+    dados_agendamento = cursor.fetchall()
+
+    # id, NºCadastro, Nome Pet
+    finalizar_agendamento.label_34.setText(str(id))
+    finalizar_agendamento.label_35.setText(str(dados_agendamento[0][0]))
+    finalizar_agendamento.label_41.setText(str(dados_agendamento[0][1]))
+    # Data, Hora
+    finalizar_agendamento.label_25.setText(str(dados_agendamento[0][2]))
+    finalizar_agendamento.label_30.setText(str(dados_agendamento[0][3]))
+
+
+def finalizar_dados_agendamento():
+    global lista_produtos_servicos, valor_total, id_valor_lido
+    forma_pagamento = finalizar_agendamento.comboBox.currentText()
+    lista = ''
+    # tirar os valores da lista e colocar em uma string para fazer insert no banco
+    for i in lista_produtos_servicos:
+        lista = lista + i[0] + '='
+        lista = lista + str(i[1]) + '--'
+
+    try:
+        cursor = banco.cursor()
+        cursor.execute(f"INSERT INTO TB_BAIXA_AGENDAMENTO (ID_AGENDAMENTO, DESCRICAO_PRECO, VALOR_TOTAL, FORMA_PAGAMENTO) VALUES ('{id_valor_lido}','{lista}','{valor_total}','{str(forma_pagamento)}')")
+        banco.commit()
+
+        QMessageBox.about(finalizar_agendamento, 'Ação Realizada', 'Agendamento finalizado com sucesso.')
+
+    except:
+        # se o campo obrigató contato for vazio imprimir essa mensagem
+        if lista_produtos_servicos == [] or valor_total == 0:
+            QMessageBox.about(finalizar_agendamento, 'Erro', 'Campos obrigatórios não foram preenchidos.')
+
+    else:
+        finalizar_agendamento.label_38.setText('')
+        alterar_status_agendamento_finalizado()
+        finalizar_agendamento.close()
+        listar_dados_agenda.close()
+        chamar_funcoes_home()
+
+
 
 
 app = QtWidgets.QApplication([])
+
 home = uic.loadUi('Home.ui')
 home.actionNovo_Cliente_Pet.triggered.connect(chamar_novo_cliente)
 home.actionNovo_Produto_Servi_o.triggered.connect(chamar_novo_produto_servico)
 home.actionContratar_Plano_de_Servi_o.triggered.connect(chamar_plano_serviço)
 
 home.actionNovo_Agendamento.triggered.connect(chamar_novo_agendamento)
-home.actionAgendamentos.triggered.connect(chamar_novo_agendamento)
+home.actionAgendamentos.triggered.connect(chamar_agenda)
+home.actionAgenda_Finalizados.triggered.connect(chamar_agenda_finalizados)
 
-home.show()
-
-
-
+login_tela = uic.loadUi('Login.ui')
+chamar_funcoes_login()
 
 
 
@@ -1072,6 +1508,8 @@ listar_dados_produtos = uic.loadUi('Listar Dados Produtos.ui')
 
 listar_dados_servicos = uic.loadUi('Listar Dados Servicos.ui')
 
+listar_dados_agendamento = uic.loadUi('Listar Dados Agendamento.ui')
+
 editar_cliente = uic.loadUi('Editar Cliente.ui')
 
 editar_pet = uic.loadUi('Editar Pet.ui')
@@ -1080,7 +1518,17 @@ editar_produto = uic.loadUi('Editar Produto.ui')
 
 editar_servico = uic.loadUi('Editar Servico.ui')
 
+editar_agendamento = uic.loadUi('Editar Agendamento.ui')
+
 listar_pets_agendamento = uic.loadUi('Listar Pets Agendamento.ui')
 
 listar_servicos_agendamento = uic.loadUi('Listar Servicos Agendamento.ui')
+
+listar_dados_agenda = uic.loadUi('Agenda.ui')
+
+finalizar_agendamento = uic.loadUi('Finalizar Agendamento.ui')
+
+listar_produtos_baixa_agendamento = uic.loadUi('Listar Produtos Baixa Agendamento.ui')
+
+listar_servicos_baixa_agendamento = uic.loadUi('Listar Servicos Baixa Agendamento.ui')
 app.exec()

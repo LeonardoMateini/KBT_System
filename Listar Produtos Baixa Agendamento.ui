@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>674</width>
+    <width>791</width>
     <height>646</height>
    </rect>
   </property>
@@ -20,10 +20,10 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>10</y>
-      <width>110</width>
-      <height>40</height>
+      <x>260</x>
+      <y>20</y>
+      <width>271</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -32,72 +32,73 @@
      </font>
     </property>
     <property name="text">
-     <string>Agenda</string>
+     <string>Lista de produtos</string>
     </property>
    </widget>
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>140</x>
       <y>90</y>
-      <width>581</width>
+      <width>501</width>
       <height>411</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255);</string>
     </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>true</bool>
+    </attribute>
     <attribute name="horizontalHeaderCascadingSectionResizes">
      <bool>false</bool>
     </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>0</number>
+    </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>160</number>
+     <number>250</number>
     </attribute>
-    <attribute name="horizontalHeaderStretchLastSection">
-     <bool>true</bool>
+    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+     <bool>false</bool>
     </attribute>
     <column>
      <property name="text">
-      <string>DATA</string>
+      <string>DESCRIÇÃO</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>PREÇOS</string>
      </property>
      <property name="font">
       <font>
        <pointsize>11</pointsize>
       </font>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>HORA</string>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>11</pointsize>
-      </font>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>NOME PET</string>
      </property>
     </column>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>530</y>
-      <width>101</width>
-      <height>51</height>
+      <x>330</x>
+      <y>550</y>
+      <width>110</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(51, 209, 122);</string>
+    </property>
     <property name="text">
-     <string>VISUALIZAR</string>
+     <string>Selecionar</string>
     </property>
    </widget>
   </widget>
@@ -106,7 +107,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>674</width>
+     <width>791</width>
      <height>22</height>
     </rect>
    </property>
